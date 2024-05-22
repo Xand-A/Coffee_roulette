@@ -1,0 +1,62 @@
+## Suggests groups of 3 people (randomly selected from a supplied list of names) for a coffee meetup.
+
+import random
+from itertools import combinations
+import time
+import sys
+
+def read_names_from_txt(file_path):
+    with open(file_path, 'r') as file:
+        names = [line.strip() for line in file if not line.strip().startswith('--')]
+        if len(names) <= 2:
+            print(f"You don't need me to organise a group for {names}!")
+            names = []
+    return names
+
+def get_coffee_groups(possible_groups): 
+    # Select groups until all names are used once
+    groups = []
+    while names:
+        if len(names) == 1:
+            groups[-1] += (names.pop(),)
+        elif len(names) == 2:
+            groups.append(names)
+            break
+        else:
+            group = random.choice(possible_groups)
+            groups.append(group)
+            for name in group:
+                names.remove(name)
+            possible_groups = [g for g in possible_groups if not set(group) & set(g)]
+        
+    return groups
+
+def display_groups(groups):
+    for i, group in enumerate(groups, start=1):
+        organiser = group[0]
+        members = ", ".join([f"{member} (Organiser)" if member == organiser else member for member in group])
+        print(f"Group {i}: {members}")
+        time.sleep(1)
+        
+if __name__ == "__main__":
+    file_path = './Coffee_Names.txt'
+    names = read_names_from_txt(file_path)
+    
+    if names: 
+        #Shuffle list
+        random.shuffle(names)
+        #Generate all possible combinations of 3 names
+        possible_groups = list(combinations(names, 3))
+        coffee_groups = get_coffee_groups(possible_groups)
+        display_groups(coffee_groups)        
+FooterAllianz Technology SE
+Allianz Technology SE
+Allianz Technology SE
+© 2024 GitHub, Inc.
+Footer navigation
+Help
+Support
+API
+Training
+Blog
+About
